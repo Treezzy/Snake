@@ -2,11 +2,14 @@
 // Snake.asm
 //
 // Created: 2016-04-22 13:33:39
-// Author : a15ludch
+// Author : shitsngiggles
 //
 .DEF rMemTemp = r16
 .DEF rIndexTemp = r17
 .DEF rGenericTemp = r18
+.DEF rReverse = r20
+.DEF rIndexTempR = r21
+.DEF rAND = r22
 
 .DSEG
 	displayMatrix:
@@ -18,52 +21,52 @@
 .ORG INT_VECTORS_SIZE
 
 init:
-	  // Initialisering av bildmatris
+	  // Initialize displaymatrix
 	  ldi yh, HIGH(displayMatrix)
 	  ldi yl, LOW(displayMatrix)
 
-	  ldi rMemTemp, 0b11000001
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000001
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000001
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000001
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000010
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000010
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000010
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
 	  subi yh, -1
-	  ldi rMemTemp, 0b11000010
+	  ldi rMemTemp, 0b00101010
 	  st y, rMemTemp
 
-	  ldi yh, HIGH(displayMatrix)	// Återställer y
+	  ldi yh, HIGH(displayMatrix)	// Reset y
 	  ldi yl, LOW(displayMatrix)
-	  // Slut på bildmatris
+	  // End of displaymatrix
 
-	  // Sätt stackpekaren till högsta minnesadressen
+	  // Set stackpointer to highest memory adress
       ldi rIndexTemp, HIGH(RAMEND)
       out SPH, rIndexTemp
       ldi rIndexTemp, LOW(RAMEND)
       out SPL, rIndexTemp
 
-	  // Inställning av skärm-I/O
+	  // Setting of screen-I/O
 	  ldi rMemTemp, 0b00001111
 	  out DDRC, rMemTemp  
 	  ldi rMemTemp, 0b11111100
@@ -71,30 +74,44 @@ init:
 	  ldi rMemTemp, 0b00111111
 	  out DDRB, rMemTemp 
 	  
-	  ldi rMemTemp, 0b00111111
-	  out PORTB, rMemTemp
 
 // Replace with your application code
 start:
 	ldi r19, 0
 	ldi rIndexTemp, 0
 	ldi rGenericTemp, 0b00000001
+	ldi rAND, 0b11000000
 
 renderLoop:	
-	//Ladda in minnesmatris
+	//Load memorymatrix
 	ld rMemTemp, y
+	ldi rIndexTempR, 0
+	// Reverse order of byte
+	reverse:
+		subi rIndexTempR, -1
+		lsl rMemTemp				// shift one bit into the carry flag
+		ror rReverse				// rotate carry flag into result
+		cpi rIndexTempR, 9
+		brlt reverse
+	ldi r23, 0
+	add r23, rReverse
+	lsl r23
+	lsl r23
 
-	//Ställ in kolonner och rader
-	out PORTC, rGenericTemp 
-	out PORTD, r19
-	out PORTB, rMemTemp
+	// Set columns and rows
+	out PORTC, rGenericTemp
+	out PORTB, r23
+	
+	and r23, rAND
+	out PORTD, r23
 
 	cpi rIndexTemp, 4
 	brlt skipLatterOperations
-		out PORTC, r19 
-		out PORTD, rGenericTemp
-	skipLatterOperations:
-	
+		out PORTC, r19
+		add r23, rGenericTemp 
+		out PORTD, r23
+
+skipLatterOperations:	
 	subi rIndexTemp, -1
 	subi yh, -1
 	lsl rGenericTemp
@@ -103,7 +120,8 @@ renderLoop:
 	brne skipBitAdjust
 		lsr rGenericTemp
 		lsr rGenericTemp
-	skipBitAdjust:
+
+skipBitAdjust:
 
 	cpi rIndexTemp, 8
 	brlt renderLoop

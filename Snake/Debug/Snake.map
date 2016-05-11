@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.57  C:\AtmelStudio\7.0\Snake\Snake\main.asm Tue May 03 17:33:30 2016
+AVRASM ver. 2.2.0  C:\Users\William\Documents\GitHub\Snake\Snake\main.asm Wed May 11 12:04:31 2016
 
 
 EQU  SIGNATURE_000 0000001e
@@ -698,9 +698,13 @@ EQU  INT_VECTORS_SIZE 00000034
 DEF  rMemTemp     r16
 DEF  rIndexTemp   r17
 DEF  rGenericTemp r18
+DEF  rReverse     r20
+DEF  rIndexTempR  r21
+DEF  rAND         r22
 DSEG displayMatrix 00000100
 CSEG init         00000034
-CSEG start        0000005b
-CSEG renderLoop   0000005e
-CSEG skipLatterOperations 00000066
-CSEG skipBitAdjust 0000006d
+CSEG start        00000059
+CSEG renderLoop   0000005d
+CSEG reverse      0000005f
+CSEG skipLatterOperations 00000071
+CSEG skipBitAdjust 00000078
