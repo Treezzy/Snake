@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.0  C:\Users\William\Documents\GitHub\Snake\Snake\main.asm Wed May 11 12:04:31 2016
+AVRASM ver. 2.1.57  C:\AtmelStudio\7.0\Snake\Snake\main.asm Wed May 18 16:46:09 2016
 
 
 EQU  SIGNATURE_000 0000001e
@@ -695,16 +695,39 @@ EQU  ACIaddr      0000002e
 EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
+DEF  rInputX      r24
+DEF  rInputY      r25
+DEF  rOutputB     r13
+DEF  rOutputC     r14
+DEF  rOutputD     r15
 DEF  rMemTemp     r16
 DEF  rIndexTemp   r17
-DEF  rGenericTemp r18
-DEF  rReverse     r20
-DEF  rIndexTempR  r21
-DEF  rAND         r22
+DEF  rRollTemp    r18
+DEF  rShouldUpdate r19
+DEF  rAligned     r20
+DEF  rAND         r21
+DEF  rORop        r22
+DEF  rGenericTemp r23
+DEF  rPosX        r12
+DEF  rPosY        r11
 DSEG displayMatrix 00000100
 CSEG init         00000034
-CSEG start        00000059
-CSEG renderLoop   0000005d
-CSEG reverse      0000005f
-CSEG skipLatterOperations 00000071
-CSEG skipBitAdjust 00000078
+CSEG updateTimerInterrupt 00000070
+CSEG mainLoop     00000072
+CSEG skipUpdate   00000076
+CSEG update       0000007e
+CSEG inputUpdate  00000080
+CSEG snakeMove    00000096
+CSEG renderStart  000000db
+CSEG inputPoll    0000008e
+CSEG moveRight    0000009f
+CSEG moveLeft     000000a5
+CSEG moveUp       000000ab
+CSEG moveDown     000000b2
+CSEG return       000000c2
+CSEG updatePos    000000bc
+CSEG moveNot      000000b9
+CSEG resetY       000000c3
+CSEG renderLoop   000000df
+CSEG skipLatterOperations 000000fa
+CSEG skipBitAdjust 00000104
